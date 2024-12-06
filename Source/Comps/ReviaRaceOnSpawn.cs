@@ -10,6 +10,12 @@ namespace ReviaRace.Comps
 {
     public class ReviaRaceOnSpawn : ThingComp
     {
+
+        public override void Initialize(CompProperties props)
+        {
+            base.Initialize(props);
+        }
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);

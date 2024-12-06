@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using ReviaRace.Helpers;
 using ReviaRace.Needs;
+using UnityEngine.Assertions;
 
 namespace ReviaRace.Comps
 {
@@ -28,8 +29,20 @@ namespace ReviaRace.Comps
         private int _btTick = 0;
         private BloodthirstNeed _btNeed = null; // Caching to avoid frequent casting and searching of the need list. Iterators are bad for performance, mmkay?
         private bool _btDisabled = false;
+        private bool _SoulReapInitialized = false;
+
+        public override void Initialize(CompProperties props)
+        {
+            base.Initialize(props);
+        }
+
         public override void CompTick()
         {
+            if (!_SoulReapInitialized)
+            {
+                InitSoulReapTier();
+            }
+
             if (_btDisabled)
             {
                 return;
@@ -75,8 +88,15 @@ namespace ReviaRace.Comps
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            var pawn = parent as Pawn;
             
+            if (!_SoulReapInitialized)
+                InitSoulReapTier();
+        }
+
+        internal void InitSoulReapTier ()
+        {
+            var pawn = parent as Pawn;
+
             if (pawn != null && GetSoulReapTier() == -1)
             {
                 if (pawn.kindDef == Defs.MarauderSkullshatterer ||
@@ -86,9 +106,9 @@ namespace ReviaRace.Comps
                     pawn.skills.GetSkill(SkillDefOf.Melee).Level = 20;
                     pawn.skills.GetSkill(SkillDefOf.Shooting).Level = 20;
 
-                    if (!pawn.story.traits.HasTrait(TraitDefOf.Tough))
+                    if (!pawn.story.traits.HasTrait(Defs.Tough))
                     {
-                        pawn.story.traits.allTraits.AddDistinct(new Trait(TraitDefOf.Tough));
+                        pawn.story.traits.allTraits.AddDistinct(new Trait(Defs.Tough));
                     }
                 }
                 else
@@ -117,6 +137,8 @@ namespace ReviaRace.Comps
                     }
                 }
             }
+
+            _SoulReapInitialized = true;
         }
 
         internal Hediff SoulReapHediff => (parent as Pawn)?.health.hediffSet.hediffs

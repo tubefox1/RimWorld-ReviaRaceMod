@@ -56,5 +56,10 @@ namespace ReviaRace.Helpers
         // Ideology
         internal static MemeDef Skarnite => _skarnite ??= DefDatabase<MemeDef>.GetNamed("ReviaRaceSkarniteMeme");
         private static MemeDef _skarnite;
+
+        // traits
+
+        internal static TraitDef Tough => _tough ??= TraitDef.Named("Tough");
+        internal static TraitDef _tough;
     }
 }
